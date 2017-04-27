@@ -86,41 +86,6 @@ class Level(Base):
     description = Column(String)
 
 
-class Observation(Base):
-    __tablename__ = 'observations'
-
-    id = Column(Integer, primary_key=True)
-    # experiment_id =
-    name = Column(String)
-
-    description = Column(String)
-
-    def __repr__(self):
-        return "<Observation(name='{}')>".format(self.name)
-
-
-class Statistic(Base):
-    __tablename__ = 'statistics'
-
-    id = Column(Integer, primary_key=True)
-    session_id = Column(Integer, ForeignKey('sessions.id'))
-    observation_id = Column(Integer, ForeignKey('observations.id'))
-    condition_id = Column(Integer, ForeignKey('conditions.id'))
-    level_id = Column(Integer, ForeignKey('levels.id'))
-    value = Column(Float)
-
-    session = relationship('Session', back_populates='statistics')
-    observation = relationship('Observation', back_populates='statistics')
-    condition = relationship('Condition', back_populates='statistics')
-    level = relationship('Level', back_populates='statistics')
-
-    def __repr__(self):
-        return "<Statistic(observation='{}', session={}, condition={}, level={}, value={})>".format(
-            self.observation.name, self.session_id, self.level.name, self.value)
-
-
-for tbl in (Session, Observation, Level, Condition):
-    tbl.statistics = relationship('Statistic', order_by=Statistic.condition_id, back_populates=tbl.__name__.lower())
 
 
 class TrackingObject(Base):
